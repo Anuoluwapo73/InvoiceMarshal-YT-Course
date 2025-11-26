@@ -14,17 +14,17 @@ async function getInvoices(userId: string) {
     where: {
       status: "PAID",
       userId: userId,
-      createdAt: {
+      date: {
         lte: new Date(),
         gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
       },
     },
     select: {
-      createdAt: true,
+      date: true,
       total: true,
     },
     orderBy: {
-      createdAt: "asc",
+      date: "asc",
     },
   });
 
@@ -32,9 +32,9 @@ async function getInvoices(userId: string) {
   const aggregateData = rawData.reduce(
     (
       acc: { [key: string]: number },
-      curr: { createdAt: string | Date; total: number }
+      curr: { date: Date; total: number }
     ) => {
-      const date = new Date(curr.createdAt).toLocaleDateString("en-US", {
+      const date = new Date(curr.date).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
       });
@@ -47,13 +47,13 @@ async function getInvoices(userId: string) {
 
   //convert to array and format object
   const transformData = Object.entries(aggregateData)
-    .map(([date, amount]) => ({
+    .map(([date, amount]: [string, number]) => ({
       date,
       amount,
       originalDate: new Date(date + ", " + new Date().getFullYear()),
     }))
     .sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
-    .map(({ date, amount }) => ({
+    .map(({ date, amount }: { date: string; amount: number; originalDate: Date }) => ({
       date,
       amount,
     }));
