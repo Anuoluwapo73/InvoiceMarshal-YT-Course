@@ -27,10 +27,30 @@ import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { invoiceSchema } from "../utils/zodSchemas";
 import { formatCurrency } from "../utils/formatCurrency";
-import { Prisma } from "@prisma/client";
+
+interface Invoice {
+  id: string;
+  invoiceName: string;
+  total: number;
+  status: string;
+  date: Date;
+  dueDate: number;
+  fromEmail: string;
+  fromAddress: string;
+  clientName: string;
+  clientEmail: string;
+  clientAddress: string;
+  currency: string;
+  invoiceNumber: number;
+  note: string;
+  invoiceItemDescription: string;
+  invoiceItemQuantity: number;
+  invoiceItemRate: number;
+  fromName: string;
+}
 
 interface iAppProps {
-  data: Prisma.InvoiceGetPayload<{}>;
+  data: Invoice;
 }
 export function EditInvoice({ data }: iAppProps) {
   const [lastResult, action] = useActionState(editInvoice, undefined);
