@@ -9,7 +9,7 @@ import Graph from "./Graph";
 import prisma from "../utils/db";
 import { requireUser } from "../utils/hooks";
 
-async function getInvoices(userId: string) {
+async function getInvoices(userId: string): Promise<{ date: string; amount: number }[]> {
   const rawData = await prisma.invoice.findMany({
     where: {
       status: "PAID",
@@ -46,14 +46,14 @@ async function getInvoices(userId: string) {
   );
 
   //convert to array and format object
-  const transformData = Object.entries(aggregateData)
-    .map(([date, amount]: [string, number]) => ({
+  const transformData: { date: string; amount: number }[] = Object.entries(aggregateData)
+    .map(([date, amount]) => ({
       date,
-      amount,
+      amount: Number(amount),
       originalDate: new Date(date + ", " + new Date().getFullYear()),
     }))
     .sort((a, b) => a.originalDate.getTime() - b.originalDate.getTime())
-    .map(({ date, amount }: { date: string; amount: number; originalDate: Date }) => ({
+    .map(({ date, amount }) => ({
       date,
       amount,
     }));
