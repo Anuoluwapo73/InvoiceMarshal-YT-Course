@@ -51,7 +51,8 @@ export async function DashboardBlocks() {
         </CardHeader>
         <CardContent>
           <h2 className="text-2xl font-bold">
-            {data.reduce((acc, invoice) => acc + invoice.total, 0)}
+            {data.reduce((acc: number, invoice: { total: number }) => acc + invoice.total, 0)}
+
           </h2>
           <p className="text-xs text-muted-foreground">
             Based on total volume

@@ -30,7 +30,10 @@ async function getInvoices(userId: string) {
 
   //Group and aggregate data by date
   const aggregateData = rawData.reduce(
-    (acc: { [key: string]: number }, curr) => {
+    (
+      acc: { [key: string]: number },
+      curr: { createdAt: string | Date; total: number }
+    ) => {
       const date = new Date(curr.createdAt).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
@@ -41,6 +44,7 @@ async function getInvoices(userId: string) {
     },
     {}
   );
+
   //convert to array and format object
   const transformData = Object.entries(aggregateData)
     .map(([date, amount]) => ({
@@ -58,10 +62,10 @@ async function getInvoices(userId: string) {
 export async function InvoiceGraph() {
   const session = await requireUser();
   const data = await getInvoices(session.user?.id as string);
-  
-  console.log('InvoiceGraph - User ID:', session.user?.id);
-  console.log('InvoiceGraph - Data:', data);
-  
+
+  console.log("InvoiceGraph - User ID:", session.user?.id);
+  console.log("InvoiceGraph - Data:", data);
+
   return (
     <Card className="lg:col-span-2">
       <CardHeader>
